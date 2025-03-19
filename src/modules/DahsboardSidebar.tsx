@@ -57,7 +57,7 @@ export default function DashboardSidebar() {
           </SidebarMenuItem>
           <SidebarMenuItem>
             <SidebarMenuButton asChild>
-              <a href="#">
+              <a href="/usersettings">
                 <User className="h-4 w-4" />
                 <span>Profile</span>
               </a>

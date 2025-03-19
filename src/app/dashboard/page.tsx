@@ -7,10 +7,13 @@ import { Separator } from "@/components/ui/separator";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { GlassWater , BatteryLow , PersonStanding , MonitorPause} from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
-import { useChart } from "@/components/ui/chart";
+//import { useChart } from "@/components/ui/chart";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { PieChart, Pie, Cell } from "recharts";
+import { useState } from "react";
 
+
+   
 
 {/*Valores que apareceran en la tabla de agua consumida:*/}
 const data = [
@@ -29,6 +32,7 @@ const progressData = [
     { id: "Pomodoro Mastery", a: 3, b: 1, c: 5, d: 2, e: 9 },
     { id: "Hydration Hero", a: 4, b: 2, c: 6, d: 2, e: 0 },
   ];
+  
  {/*valor de la grafica de tiempo*/}
 const timeData = [
     { name: "Tarea A", value: 55, color: "#8884d8" },
@@ -39,12 +43,22 @@ const timeData = [
   
 
 export default function Dashboard() {
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
   return (
     <SidebarProvider>
-      <div className="flex min-h-screen w-full flex-col">
-        <DashboardSidebar />
-        <SidebarInset>
-          <DashboardNavbar />
+      <div className="flex min-h-screen w-full">
+        {/* Sidebar */}
+        <DashboardSidebar onToggle={() => setIsSidebarOpen(!isSidebarOpen)} />
+
+        {/* Main content */}
+        <div
+          className={`flex-1 p-4 md:p-6 transition-all duration-300 ${
+            isSidebarOpen ? "ml-64" : "ml-0"
+          }`}
+        >
+          <SidebarInset>
+            <DashboardNavbar />
           <main className="flex-1 p-4 md:p-6">
             <h1 className="text-2xl font-bold">Welcome to the Dasboard</h1>
             <p className="mt-2 text-gray-600">
@@ -169,10 +183,9 @@ export default function Dashboard() {
             <div className="flex flex-col items-center">
            
             </div>
-
-
-          </main>
-        </SidebarInset>
+            </main>
+          </SidebarInset>
+        </div>
       </div>
     </SidebarProvider>
   );
