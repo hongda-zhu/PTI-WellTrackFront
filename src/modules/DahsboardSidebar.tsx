@@ -33,7 +33,7 @@ export default function DashboardSidebar() {
         <SidebarMenu className="p-4">
           <SidebarMenuItem>
             <SidebarMenuButton asChild isActive>
-              <a href="#">
+              <a href="/dashboard"> 
                 <Home className="h-4 w-4" />
                 <span>Home</span>
               </a>
@@ -43,7 +43,7 @@ export default function DashboardSidebar() {
             <SidebarMenuButton asChild>
               <a href="#">
                 <PieChart className="h-4 w-4" />
-                <span>Analytics</span>
+                <span>Metrics</span>
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -51,7 +51,7 @@ export default function DashboardSidebar() {
             <SidebarMenuButton asChild>
               <a href="#">
                 <MessageSquare className="h-4 w-4" />
-                <span>Messages</span>
+                <span>Challenges</span>
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>
