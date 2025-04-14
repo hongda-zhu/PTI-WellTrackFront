@@ -1,13 +1,13 @@
 "use client";
 
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import DashboardSidebar from "@/modules/DahsboardSidebar";
-import DashboardNavbar from "@/modules/DashboardNavbar";
-import DynamicTabs from "@/modules/TabsMod"; 
+import DashboardSidebar from "@/components/app-sidebar";
+import DashboardNavbar from "@/components/app-navbar";
+import DynamicTabs from "@/modules/TabsMod";
 import DynamicSettingsCard from "@/modules/SettingsCardMod";
 import { useState } from "react";
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -15,10 +15,9 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 // Datos para las Tabs
 const tabsData = [
@@ -35,14 +34,15 @@ const tabsData = [
         </div>
         <CardFooter>
           <Button>Save changes</Button>
-        </CardFooter>        
+        </CardFooter>
       </>
     ),
   },
   {
     value: "password",
     title: "Password",
-    description: "Change your password here. After saving, you'll be logged out.",
+    description:
+      "Change your password here. After saving, you'll be logged out.",
     content: (
       <>
         <div className="space-y-1">
@@ -61,9 +61,10 @@ const tabsData = [
   },
 ];
 
-
 export default function UserSettings() {
-  {/*Valores por defecto de la configuración*/}
+  {
+    /*Valores por defecto de la configuración*/
+  }
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [autoMonitor, setAutoMonitor] = useState(true);
   const [cameraAccess, setCameraAccess] = useState(true);
@@ -118,25 +119,26 @@ export default function UserSettings() {
         <div
           className={`flex-1 p-4 md:p-6 transition-all duration-300 ${
             isSidebarOpen ? "ml-64" : "ml-0"
-          }`}>
+          }`}
+        >
           <SidebarInset>
             <DashboardNavbar />
             <main>
-                <h1 className="text-2xl font-bold mb-6">User Settings</h1>
+              <h1 className="text-2xl font-bold mb-6">User Settings</h1>
 
-                {/* Contenedor para colocar las secciones lado a lado */}
-                <div className="flex flex-wrap gap-6">
-                    {/* User Settings */}
-                    <DynamicTabs tabs={tabsData} />
+              {/* Contenedor para colocar las secciones lado a lado */}
+              <div className="flex flex-wrap gap-6">
+                {/* User Settings */}
+                <DynamicTabs tabs={tabsData} />
 
-                    {/* Monitoring Settings */}
-                    <DynamicSettingsCard
-                      title="Monitoring Settings"
-                      description="Configure your monitoring preferences below."
-                      settings={settings}
-                    />
-                </div>
-                </main>
+                {/* Monitoring Settings */}
+                <DynamicSettingsCard
+                  title="Monitoring Settings"
+                  description="Configure your monitoring preferences below."
+                  settings={settings}
+                />
+              </div>
+            </main>
           </SidebarInset>
         </div>
       </div>
