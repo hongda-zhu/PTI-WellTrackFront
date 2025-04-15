@@ -5,7 +5,6 @@ import {
   BatteryLow,
   PersonStanding,
   MonitorPause,
-  Clapperboard,
 } from "lucide-react";
 import MetricCard from "@/components/metric-card";
 import BarChartComponent from "@/components/barchart";

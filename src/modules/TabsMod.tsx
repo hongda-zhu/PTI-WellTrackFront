@@ -1,9 +1,4 @@
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Card,
   CardContent,
@@ -29,7 +24,7 @@ interface DynamicTabsProps {
 
 export default function DynamicTabs({ tabs }: DynamicTabsProps) {
   return (
-    <Tabs defaultValue={tabs[0]?.value} className="w-[400px]">
+    <Tabs defaultValue={tabs[0]?.value} className="w-full h-full">
       <TabsList className="grid w-full grid-cols-2 mb-6">
         {tabs.map((tab) => (
           <TabsTrigger key={tab.value} value={tab.value}>
@@ -38,7 +33,11 @@ export default function DynamicTabs({ tabs }: DynamicTabsProps) {
         ))}
       </TabsList>
       {tabs.map((tab) => (
-        <TabsContent key={tab.value} value={tab.value}>
+        <TabsContent
+          key={tab.value}
+          value={tab.value}
+          className="h-full w-full"
+        >
           <Card>
             <CardHeader>
               <CardTitle>{tab.title}</CardTitle>

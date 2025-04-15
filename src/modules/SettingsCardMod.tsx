@@ -1,10 +1,19 @@
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 
-{/*puedo añadir más componentes dentro de la card para que aparezcan*/}
+{
+  /*puedo añadir más componentes dentro de la card para que aparezcan*/
+}
 interface Setting {
   type: "switch" | "checkboxGroup";
   label: string;
@@ -19,9 +28,13 @@ interface DynamicSettingsCardProps {
   settings: Setting[];
 }
 
-export default function DynamicSettingsCard({ title, description, settings }: DynamicSettingsCardProps) {
+export default function DynamicSettingsCard({
+  title,
+  description,
+  settings,
+}: DynamicSettingsCardProps) {
   return (
-    <Card className="w-[400px]">
+    <Card className="w-full h-fit">
       <CardHeader>
         <CardTitle>{title}</CardTitle>
         <CardDescription>{description}</CardDescription>
@@ -32,7 +45,10 @@ export default function DynamicSettingsCard({ title, description, settings }: Dy
             <Label>{setting.label}</Label>
             {setting.type === "switch" && (
               <div className="flex items-center justify-between mt-2">
-                <Switch checked={Boolean(setting.value)} onCheckedChange={setting.onChange} />
+                <Switch
+                  checked={Boolean(setting.value)}
+                  onCheckedChange={setting.onChange}
+                />
               </div>
             )}
             {setting.type === "checkboxGroup" && (

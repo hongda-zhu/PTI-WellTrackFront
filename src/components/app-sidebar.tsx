@@ -1,4 +1,5 @@
 "use client";
+import { usePathname } from "next/navigation";
 
 import {
   Sidebar,
@@ -28,12 +29,12 @@ import {
 const items = [
   {
     title: "Home",
-    url: "#",
+    url: "/",
     icon: Home,
   },
   {
     title: "Metrics",
-    url: "#",
+    url: "/metrics",
     icon: PieChart,
   },
   {
@@ -43,7 +44,7 @@ const items = [
   },
   {
     title: "Profile",
-    url: "#",
+    url: "/usersettings",
     icon: User,
   },
   {
@@ -54,6 +55,8 @@ const items = [
 ];
 
 export default function AppSidebar() {
+  const pathname = usePathname();
+
   return (
     <Sidebar className="border-r" collapsible="offcanvas">
       <SidebarHeader className="border-b p-3.5">
@@ -69,7 +72,14 @@ export default function AppSidebar() {
             {items.map((item) => (
               <SidebarMenuItem key={item.title}>
                 <SidebarMenuButton asChild>
-                  <a href={item.url} className="flex items-center gap-2">
+                  <a
+                    href={item.url}
+                    className={`flex items-center gap-2 px-2 py-1.5 rounded-md transition-colors ${
+                      pathname === item.url
+                        ? "bg-muted text-primary"
+                        : "hover:bg-muted/50 text-muted-foreground"
+                    }`}
+                  >
                     <item.icon className="h-4 w-4" />
                     <span>{item.title}</span>
                   </a>

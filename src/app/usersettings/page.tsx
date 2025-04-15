@@ -1,6 +1,5 @@
 "use client";
 
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import DashboardSidebar from "@/components/app-sidebar";
 import DashboardNavbar from "@/components/app-navbar";
 import DynamicTabs from "@/modules/TabsMod";
@@ -27,14 +26,14 @@ const tabsData = [
     description: "Update your email address here. Click save when you're done.",
     content: (
       <>
-        <div className="space-y-1">
-          {/*teoricamente no se puede modificar el email...*/}
-          <Label htmlFor="email">Email</Label>
-          <Input id="email" type="email" defaultValue="welltrack@gmail.com" />
+        <div className="flex w-full ">
+          <div className="space-y-2">
+            {/*teoricamente no se puede modificar el email...*/}
+            <Label htmlFor="email">Email</Label>
+            <Input id="email" type="email" defaultValue="welltrack@gmail.com" />
+            <Button>Save changes</Button>
+          </div>
         </div>
-        <CardFooter>
-          <Button>Save changes</Button>
-        </CardFooter>
       </>
     ),
   },
@@ -45,27 +44,22 @@ const tabsData = [
       "Change your password here. After saving, you'll be logged out.",
     content: (
       <>
-        <div className="space-y-1">
-          <Label htmlFor="current">Current password</Label>
-          <Input id="current" type="password" />
+        <div className="flex w-full  flex-row gap-4">
+          <div className="space-y-1">
+            <Label htmlFor="current">Current password</Label>
+            <Input id="current" type="password" />
+            <Label htmlFor="new">New password</Label>
+            <Input id="new" type="password" />
+            <Button className="mt-2">Save password</Button>
+          </div>
         </div>
-        <div className="space-y-1">
-          <Label htmlFor="new">New password</Label>
-          <Input id="new" type="password" />
-        </div>
-        <CardFooter>
-          <Button>Save password</Button>
-        </CardFooter>
       </>
     ),
   },
 ];
 
 export default function UserSettings() {
-  {
-    /*Valores por defecto de la configuración*/
-  }
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  // Valores por defecto de la configuración
   const [autoMonitor, setAutoMonitor] = useState(true);
   const [cameraAccess, setCameraAccess] = useState(true);
   const [alertFrequency, setAlertFrequency] = useState("immediate");
@@ -110,38 +104,18 @@ export default function UserSettings() {
   ];
 
   return (
-    <SidebarProvider>
-      <div className="flex min-h-screen w-full">
-        {/* Sidebar */}
-        <DashboardSidebar onToggle={() => setIsSidebarOpen(!isSidebarOpen)} />
+    <div className="flex min-h-screen w-full">
+      <div className="flex-1 p-4 md:p-6 transition-all duration-300 w-full grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* User Settings */}
+        <DynamicTabs tabs={tabsData} />
 
-        {/* Main content */}
-        <div
-          className={`flex-1 p-4 md:p-6 transition-all duration-300 ${
-            isSidebarOpen ? "ml-64" : "ml-0"
-          }`}
-        >
-          <SidebarInset>
-            <DashboardNavbar />
-            <main>
-              <h1 className="text-2xl font-bold mb-6">User Settings</h1>
-
-              {/* Contenedor para colocar las secciones lado a lado */}
-              <div className="flex flex-wrap gap-6">
-                {/* User Settings */}
-                <DynamicTabs tabs={tabsData} />
-
-                {/* Monitoring Settings */}
-                <DynamicSettingsCard
-                  title="Monitoring Settings"
-                  description="Configure your monitoring preferences below."
-                  settings={settings}
-                />
-              </div>
-            </main>
-          </SidebarInset>
-        </div>
+        {/* Monitoring Settings */}
+        <DynamicSettingsCard
+          title="Monitoring Settings"
+          description="Configure your monitoring preferences below."
+          settings={settings}
+        />
       </div>
-    </SidebarProvider>
+    </div>
   );
 }

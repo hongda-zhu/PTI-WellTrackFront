@@ -1,12 +1,4 @@
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ResponsiveContainer,
-  CartesianGrid,
-} from "recharts";
+import { BarChart, Bar, XAxis, CartesianGrid, Tooltip } from "recharts";
 
 interface BarChartComponentProps {
   data: { day: string; value: number }[];
@@ -17,7 +9,6 @@ interface BarChartComponentProps {
 import {
   ChartConfig,
   ChartContainer,
-  ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
 
@@ -36,7 +27,7 @@ export default function BarChartComponent({
     <div className="w-full bg-white rounded-md shadow-md p-6 space-y-4">
       <div className="text-md font-semibold text-gray-500">{title}</div>
       <ChartContainer config={chartConfig}>
-        <BarChart accessibilityLayer data={data}>
+        <BarChart data={data}>
           <CartesianGrid vertical={false} />
           <XAxis
             dataKey="day"
@@ -45,10 +36,7 @@ export default function BarChartComponent({
             axisLine={false}
             tickFormatter={(value) => value.slice(0, 3)}
           />
-          <ChartTooltip
-            cursor={false}
-            content={<ChartTooltipContent hideLabel />}
-          />
+          <Tooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
           <Bar dataKey="value" fill="var(--color-desktop)" radius={8} />
         </BarChart>
       </ChartContainer>
