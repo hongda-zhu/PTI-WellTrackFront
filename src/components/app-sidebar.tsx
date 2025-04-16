@@ -22,8 +22,9 @@ import {
   LogOut,
   MessageSquare,
   PieChart,
-  Settings,
   User,
+  AlarmClock,
+  Camera,
 } from "lucide-react";
 
 const items = [
@@ -39,18 +40,23 @@ const items = [
   },
   {
     title: "Challenges",
-    url: "#",
+    url: "/challenges",
     icon: MessageSquare,
   },
   {
-    title: "Profile",
+    title: "User Settings",
     url: "/usersettings",
     icon: User,
   },
   {
-    title: "Settings",
+    title: "Pomodoro",
     url: "#",
-    icon: Settings,
+    icon: AlarmClock,
+  },
+  {
+    title: "Camera",
+    url: "#",
+    icon: Camera,
   },
 ];
 
