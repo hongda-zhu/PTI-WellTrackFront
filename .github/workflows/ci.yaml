@@ -1,0 +1,173 @@
+# Ruta del archivo: .github/workflows/ci.yaml
+name: Frontend CI
+
+on:
+  push:
+    branches: [ main ] # Se activa cuando se envía código a la rama main
+    paths: # Solo se activa si cambian los archivos en las siguientes rutas
+      - 'src/**'
+      - 'public/**'
+      - 'package*.json'
+      - 'next.config.ts'
+      - '.github/workflows/ci.yaml' # Los cambios en el propio flujo de trabajo también deben activarlo
+      - 'Dockerfile'
+
+jobs:
+  build-and-deploy: # Define un trabajo llamado build-and-deploy
+    runs-on: ubuntu-latest # Especifica el entorno de ejecución como el último Ubuntu
+
+    steps: # Pasos dentro del trabajo
+    - name: Checkout code # Paso 1: Clonar (Checkout) el código de la aplicación
+      uses: actions/checkout@v4 # Usa la acción checkout v4
+      with:
+        fetch-depth: 0 # Obtiene todo el historial de Git, necesario para la extracción de etiquetas SemVer
+
+    - name: Set up Node.js # Paso 2: Configurar el entorno Node.js
+      uses: actions/setup-node@v4 # Usa la acción setup-node v4
+      with:
+        node-version: '18' # Especifica la versión de Node.js como 18
+        cache: 'npm' # Habilita la caché de dependencias de npm para acelerar la instalación
+
+    - name: Install dependencies # Paso 3: Instalar dependencias de Node.js
+      run: npm ci # Usa npm ci para instalar exactamente las dependencias definidas en package-lock.json
+
+    - name: Lint # Paso 4: Ejecutar comprobaciones de estilo y calidad del código (Lint)
+      run: npm run lint # Ejecuta el script 'lint' definido en package.json
+
+    - name: Build # Paso 5: Construir la aplicación frontend
+      run: npm run build # Ejecuta el script 'build' definido en package.json
+
+    - name: Set up Docker Buildx # Paso 6: Configurar el entorno Docker Buildx para construir imágenes eficientemente
+      uses: docker/setup-buildx-action@v3 # Usa la acción setup-buildx v3
+
+    - name: Login to GitHub Container Registry # Paso 7: Iniciar sesión en el registro de contenedores de GitHub (GHCR)
+      uses: docker/login-action@v3 # Usa la acción login v3
+      with:
+        registry: ghcr.io # Especifica la dirección del registro como ghcr.io
+        username: ${{ github.repository_owner }} # Usa el propietario del repositorio de GitHub como nombre de usuario (obtenido automáticamente)
+        password: ${{ secrets.GITHUB_TOKEN }} # Usa el GITHUB_TOKEN generado automáticamente por GitHub Actions como contraseña (obtenido automáticamente)
+
+    - name: Extract metadata for Docker # Paso 8: Extraer metadatos para la imagen Docker (etiquetas, labels, etc.)
+      id: meta # Asigna un ID a este paso para referenciar su salida posteriormente
+      uses: docker/metadata-action@v5 # Usa la acción metadata v5
+      with:
+        images: ghcr.io/${{ github.repository_owner }}/frontend # Define el nombre base de la imagen (formato: ghcr.io/PROPIETARIO/NOMBRE_IMAGEN)
+        tags: | # Define cómo generar las etiquetas de la imagen
+          type=sha,format=long,prefix= # Usa el SHA completo del commit de Git como etiqueta
+          type=semver,pattern={{version}} # Si existe una etiqueta de versión semántica de Git (ej. v1.2.3), úsala también como etiqueta
+          # type=ref,event=branch # Opcional: Usa el nombre de la rama como etiqueta (ej. main)
+
+    - name: Build and push Docker image # Paso 9: Construir y enviar (push) la imagen Docker a GHCR
+      uses: docker/build-push-action@v5 # Usa la acción build-push v5
+      with:
+        context: . # El contexto de construcción de Docker es el directorio actual
+        push: true # Enviar (push) la imagen al registro
+        tags: ${{ steps.meta.outputs.tags }} # Usa las etiquetas extraídas en el paso anterior
+        labels: ${{ steps.meta.outputs.labels }} # Usa las labels extraídas en el paso anterior como metadatos de la imagen
+        cache-from: type=gha # Usa la caché de GitHub Actions para acelerar la construcción (obtiene capas antiguas)
+        cache-to: type=gha,mode=max # Envía (push) la caché de construcción a la caché de GitHub Actions (guarda nuevas capas)
+
+    - name: Install yq # Paso 10: Instalar la herramienta yq para editar archivos YAML
+      run: sudo wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq && sudo chmod +x /usr/bin/yq
+
+    # ================================================================
+    # Paso 11: Generar un token de acceso temporal usando credenciales de GitHub App
+    # ================================================================
+    - name: Generate GitHub App Token
+      id: generate_token # Asignar ID al paso
+      uses: tibdex/github-app-token@v2 # Usa la acción para generar el token de la App
+      with:
+        # --- !! Asegúrate de que GITOPS_APP_ID se ha creado en los Secrets del repositorio !! ---
+        app_id: ${{ secrets.GITOPS_APP_ID }}
+        # --- !! Asegúrate de que GITOPS_PRIVATE_KEY se ha creado en los Secrets del repositorio !! ---
+        private_key: ${{ secrets.GITOPS_PRIVATE_KEY }}
+
+    # ================================================================
+    # Paso 12: Clonar (Checkout) el código del repositorio GitOps usando el token de App generado
+    # ================================================================
+    - name: Checkout GitOps repository # Clonar (Checkout) el repositorio GitOps que contiene la configuración de K8s
+      uses: actions/checkout@v4
+      with:
+        # --- !!! Importante: Corregir y confirmar la ruta del repositorio GitOps !!! ---
+        repository: hongda-zhu/PTI-WellTrackDevops
+        # -----------------------------------------------
+        path: gitops # Clonar (Checkout) el código en el subdirectorio 'gitops'
+        token: ${{ steps.generate_token.outputs.token }} # Usa el token de App generado en el paso anterior para la autenticación
+
+    # ================================================================
+    # Paso 13: Actualizar el archivo Manifest de Kubernetes y enviarlo (push) al repositorio GitOps
+    # ================================================================
+    - name: Update Kubernetes manifests
+      env: # Pasa la información necesaria como variables de entorno al script
+        # Obtiene el token de App generado en el paso anterior
+        GITOPS_TOKEN: ${{ steps.generate_token.outputs.token }}
+        # --- !!! Por favor, confirma de nuevo si la URL HTTPS del repositorio GitOps es correcta aquí !!! ---
+        GITOPS_REPO_URL: "https://github.com/hongda-zhu/PTI-WellTrackDevops.git"
+        # --- !!! Por favor, confirma el nombre de la rama del repositorio GitOps que Argo CD está monitorizando realmente !!! ---
+        GITOPS_TARGET_BRANCH: main
+        # --- !! Confirma la ruta del archivo de despliegue del frontend en tu repositorio GitOps !! ---
+        MANIFEST_PATH: "apps/frontend/overlays/staging/deployment.yaml"
+        # -----------------------------------------------------
+        # Obtiene el nombre base completo de la imagen (sin etiqueta) del paso 'meta'
+        IMAGE_BASE_NAME: ${{ steps.meta.outputs.images }}
+      run: |
+        # Entrar en el directorio del repositorio GitOps clonado
+        cd gitops
+
+        # Obtener la etiqueta de la imagen (aún usando el método simplificado de obtener la primera etiqueta)
+        IMAGE_TAG=$(echo "${{ steps.meta.outputs.tags }}" | head -n 1)
+        # Si se necesita una etiqueta SemVer más precisa, se puede añadir lógica aquí
+
+        echo "Target manifest path: ${MANIFEST_PATH}"
+        echo "Base image name: ${IMAGE_BASE_NAME}"
+        echo "Selected image tag: ${IMAGE_TAG}"
+
+        # Comprobar si el archivo de destino existe
+        if [ ! -f "$MANIFEST_PATH" ]; then
+          echo "Error: Manifest file not found at $MANIFEST_PATH"
+          exit 1
+        fi
+
+        # Construir el nombre completo de la imagen + etiqueta
+        FULL_IMAGE_NAME="${IMAGE_BASE_NAME}:${IMAGE_TAG}"
+        echo "Updating image in $MANIFEST_PATH to ${FULL_IMAGE_NAME}"
+
+        # Usar yq para actualizar la imagen
+        yq -i '.spec.template.spec.containers[0].image = "'"$FULL_IMAGE_NAME"'"' $MANIFEST_PATH
+
+        # Comprobar si el comando yq se ejecutó correctamente
+        if [ $? -ne 0 ]; then
+          echo "Error: yq command failed."
+          exit 1
+        fi
+        echo "Successfully updated manifest file."
+
+        # Configurar la información del autor del commit de Git
+        git config --global user.name "GitHub Actions Bot"
+        git config --global user.email "actions-bot@users.noreply.github.com"
+
+        # Comprobar si el archivo Manifest especificado tiene cambios reales
+        if ! git status --porcelain $MANIFEST_PATH | grep -qE '^[ M]'; then
+          echo "No changes detected in $MANIFEST_PATH. Nothing to commit or push."
+          exit 0 # Salir con éxito, ya que no hay cambios que enviar (push)
+        fi
+        echo "Changes detected in $MANIFEST_PATH."
+
+        # Añadir el archivo modificado al área de preparación (staging area)
+        git add $MANIFEST_PATH
+        # Realizar el commit de los cambios
+        git commit -m "Update frontend image for staging to ${IMAGE_TAG}"
+        echo "Commit created."
+
+        # Construir la URL de push que incluye el token de autenticación
+        PUSH_URL="https://x-access-token:${GITOPS_TOKEN}@${GITOPS_REPO_URL#https://}"
+        echo "Pushing changes to branch '${GITOPS_TARGET_BRANCH}'..."
+
+        # Ejecutar el push, enviando el HEAD actual a la rama de destino remota
+        git push $PUSH_URL HEAD:${GITOPS_TARGET_BRANCH}
+
+        if [ $? -ne 0 ]; then
+          echo "Error: git push failed."
+          exit 1
+        fi
+        echo "Changes pushed successfully."
