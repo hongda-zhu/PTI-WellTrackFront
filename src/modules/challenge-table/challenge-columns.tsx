@@ -5,9 +5,9 @@ import { Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export type Challenge = {
-  date: string;
   name: string;
   description: string;
+  date: string;
   downloadUrl: string; // <- nuevo campo
 };
 

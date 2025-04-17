@@ -50,7 +50,7 @@ const items = [
   },
   {
     title: "Pomodoro",
-    url: "#",
+    url: "/pomodoro",
     icon: AlarmClock,
   },
   {
