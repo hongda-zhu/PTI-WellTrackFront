@@ -40,69 +40,69 @@ export default function EditSmartTaskDialog({
 
   return (
     <Dialog open onOpenChange={onClose}>
-      <DialogTitle>Edit smartTask</DialogTitle>
-      <DialogHeader>Edit the selected smartTask</DialogHeader>
       <DialogContent>
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(handleSubmit)}
-            className="space-y-4 pt-4"
-          >
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Nombre de desafío</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="Se puede cambiar el nombre"
-                      {...field}
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
+        <DialogHeader>
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(handleSubmit)}
+              className="space-y-4 pt-4"
+            >
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Nombre de desafío</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Se puede cambiar el nombre"
+                        {...field}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
 
-            <FormField
-              control={form.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Descripción</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="Se puede cambiar el descripción"
-                      {...field}
-                    />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
+              <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Descripción</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Se puede cambiar el descripción"
+                        {...field}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
 
-            <FormField
-              control={form.control}
-              name="date"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Date</FormLabel>
-                  <FormControl>
-                    <Input type="date" {...field} disabled />
-                  </FormControl>
-                </FormItem>
-              )}
-            />
+              <FormField
+                control={form.control}
+                name="date"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Date</FormLabel>
+                    <FormControl>
+                      <Input type="date" {...field} disabled />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
 
-            <div className="flex justify-between pt-2">
-              <div className="flex gap-2">
-                <Button variant="ghost" type="button" onClick={onClose}>
-                  Cancelar
-                </Button>
-                <Button type="submit">Guardar</Button>
+              <div className="flex justify-between pt-2">
+                <div className="flex gap-2">
+                  <Button variant="ghost" type="button" onClick={onClose}>
+                    Cancelar
+                  </Button>
+                  <Button type="submit">Guardar</Button>
+                </div>
               </div>
-            </div>
-          </form>
-        </Form>
+            </form>
+          </Form>
+        </DialogHeader>
       </DialogContent>
     </Dialog>
   );

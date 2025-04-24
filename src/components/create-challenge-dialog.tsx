@@ -59,11 +59,11 @@ export default function CreateChallengeDialog({ onClose, onCreate }: Props) {
 
   return (
     <Dialog open onOpenChange={onClose}>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Create Challenge</DialogTitle>
-        </DialogHeader>
+      <DialogHeader>
+        <DialogTitle>Create Challenge</DialogTitle>
+      </DialogHeader>
 
+      <DialogContent>
         <form
           onSubmit={form.handleSubmit(handleSubmit)}
           className="space-y-4 pt-4"

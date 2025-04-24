@@ -3,13 +3,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
-
-export type Challenge = {
-  name: string;
-  description: string;
-  date: string;
-  downloadUrl: string; // <- nuevo campo
-};
+import { Challenge } from "@/schema/challenge-schema";
 
 export const columns: ColumnDef<Challenge>[] = [
   {

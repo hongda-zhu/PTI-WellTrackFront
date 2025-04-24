@@ -57,7 +57,7 @@ const invoices = [
 export function ChallengeTable() {
   return (
     <div className="w-full bg-white rounded-md shadow-md p-6 space-y-4">
-      <div className="text-md font-semibold text-gray-500">Challenges</div>
+      <div className="text-md font-semibold text-gray-500">Informes</div>
 
       <Table>
         <TableHeader>

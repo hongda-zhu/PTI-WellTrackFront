@@ -57,11 +57,10 @@ export default function CreateSmartTaskDialog({ onClose, onCreate }: Props) {
 
   return (
     <Dialog open onOpenChange={onClose}>
+      <DialogHeader>
+        <DialogTitle>Create SmartTask</DialogTitle>
+      </DialogHeader>
       <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Create SmartTask</DialogTitle>
-        </DialogHeader>
-
         <form
           onSubmit={form.handleSubmit(handleSubmit)} // Ensure this correctly submits
           className="space-y-4 pt-4"
