@@ -33,9 +33,9 @@ export default function WebcamPreview() {
   }, [])
 
   return (
-    <div className="flex justify-center items-center min-h-screen p-4">
-      <Card className="h-full rounded-2xl">
-        <CardContent className="flex flex-col items-center gap-4 p-4">
+    <div className=" justify-center items-center h-full w-full min-w-[50%] min-h-screen">
+      <Card className=" flex flex-col flex-1 p-4 rounded-2xl">
+        <CardContent className="flex flex-col items-center gap-4 ">
           <video
             ref={videoRef}
             className="rounded-2xl  aspect-video bg-black"
