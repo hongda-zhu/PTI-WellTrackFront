@@ -55,7 +55,7 @@ const items = [
   },
   {
     title: "Camera",
-    url: "#",
+    url: "/camera",
     icon: Camera,
   },
 ];
