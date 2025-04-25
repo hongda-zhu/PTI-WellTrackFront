@@ -1,16 +1,14 @@
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-
-
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 export function SignUpForm({
   className,
@@ -21,9 +19,7 @@ export function SignUpForm({
       <Card>
         <CardHeader className="text-center">
           <CardTitle className="text-xl">Welcome</CardTitle>
-          <CardDescription>
-            Sign Up with your Google account
-          </CardDescription>
+          <CardDescription>Sign Up with your Google account</CardDescription>
         </CardHeader>
         <CardContent>
           <form>
@@ -60,8 +56,7 @@ export function SignUpForm({
                     <a
                       href="#"
                       className="ml-auto text-sm underline-offset-4 hover:underline"
-                    >
-                    </a>
+                    ></a>
                   </div>
                   <Input id="password" type="password" required />
                 </div>
@@ -78,5 +73,5 @@ export function SignUpForm({
         and <a href="#">Privacy Policy</a>.
       </div>
     </div>
-  )
+  );
 }
