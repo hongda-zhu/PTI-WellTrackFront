@@ -26,10 +26,24 @@ export default function AppNavbar({ children }: AppNavbarProps) {
         <div className="flex flex-1 items-center justify-between">
           <SidebarTrigger />
           <div className="flex items-center gap-4">
-            <Button variant="ghost" size="icon" className="relative">
-              <Bot className="h-5 w-5" />
-              <span className="sr-only">Chatbot</span>
-            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon" className="relative">
+                  <Bot className="h-5 w-5" />
+                  <span className="sr-only">Chatbot</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent
+                align="end"
+                className="w-[400px] h-[400px] p-0 mt-2"
+              >
+                <iframe
+                  src="https://udify.app/chat/lEuhCdGGoElU8xLu"
+                  className="w-full h-full border-rounded-lg"
+                  allow="microphone"
+                ></iframe>
+              </DropdownMenuContent>
+            </DropdownMenu>
             <Button variant="ghost" size="icon" className="relative">
               <Bell className="h-5 w-5" />
               <span className="sr-only">Notifications</span>
