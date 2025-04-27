@@ -4,6 +4,8 @@ import CredentialsProvider from "next-auth/providers/credentials";
 
 import { JWT } from "next-auth/jwt";
 
+const axios = require("axios");
+
 export const authOptions: NextAuthOptions = {
   providers: [
     // Google Provider
@@ -28,13 +30,17 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        const user = {
-          email: credentials?.email,
-          password: credentials?.password,
-        };
+        try {
+          const response = await axios.post("https://localhost:3001/login", {
+            email: credentials?.email,
+            password: credentials?.password,
+          });
 
-        if (user.email === "pti@pti.pti" && user.password === "ptiptiptipti") {
-          return { id: "1", email: user.email };
+          if (response.status === 200 && response.data) {
+            return { id: response.data.id, email: response.data.email }; // Ensure 'id' is included
+          }
+        } catch (error) {
+          console.error("Login failed:", error);
         }
 
         return null; // Return null if authentication fails
@@ -56,8 +62,8 @@ export const authOptions: NextAuthOptions = {
     },
     async session({ session, token }: { session: any; token: JWT }) {
       if (token) {
-        session.user.id = token.id;
         session.user.email = token.email;
+        session.user.id = token.id; // Asegúrate de que 'id' esté en el token
       }
       return session;
     },

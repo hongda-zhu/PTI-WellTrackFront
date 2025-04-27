@@ -11,6 +11,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { SidebarTrigger, useSidebar } from "@/components/ui/sidebar";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
+import { signOut } from "next-auth/react";
 
 import { Bell, Bot } from "lucide-react";
 import { ReactNode } from "react";
@@ -63,7 +64,9 @@ export default function AppNavbar({ children }: AppNavbarProps) {
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                <DropdownMenuItem>Logout</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => signOut({ callbackUrl: "/" })}>
+                  Logout
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
