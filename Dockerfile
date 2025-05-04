@@ -1,22 +1,11 @@
-# Frontend Dockerfile
-FROM oven/bun:latest
-
-
-# Set working directory
+FROM node:18-alpine as build
 WORKDIR /app
-
-# Copy bun.lockb and package.json (if available)
-COPY ./package.json ./
-
-# Install dependencies with Bun
-RUN bun install
-
-# Copy the rest of the frontend files
+COPY package*.json ./
+RUN npm install
 COPY . .
+RUN npm run build
 
-
-# Expose the frontend port
-EXPOSE 3000
-
-# Serve the app
-CMD ["bun", "run", "dev"]
+FROM nginx:alpine
+COPY --from=build /app/build /usr/share/nginx/html
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
