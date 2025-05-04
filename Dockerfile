@@ -1,15 +1,24 @@
-FROM oven/bun:latest
-RUN apt-get update && apt-get install -y git
+FROM oven/bun:1.1.8 as build # Pin version
+
 WORKDIR /app
-COPY package*.json ./
-RUN bun install
+RUN apt-get update && apt-get install -y git
+
+# --- 环境变量处理 ---
+ARG NEXT_PUBLIC_API_URL # 声明一个构建参数 (示例)
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL # 将 ARG 设为环境变量
+
+COPY ./package.json ./bun.lockb ./ # 复制 lock 文件也很重要
+RUN bun install --frozen-lockfile # 使用 lock 文件确保依赖一致性
+
 COPY . .
+
+# --- 不再覆盖 next.config.js ---
+# 确保仓库里的 next.config.js 正确配置了 output: "export" 等
+
+# 构建时使用环境变量
 RUN bun run build
 
+# --- 生产阶段 ---
 FROM nginx:alpine
-# 修改这里的路径，确保指向正确的输出目录
-COPY --from=0 /app/out /usr/share/nginx/html
-# 添加一个默认的nginx配置文件
-COPY nginx.conf /etc/nginx/conf.d/default.conf
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+COPY --from=build /app/out /usr/share/nginx/html
+# ... (rest of your Nginx setup)
