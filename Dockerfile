@@ -1,14 +1,14 @@
-FROM oven/bun:1.1.8 as build # Pin version
+FROM oven/bun:1.1.8 as build
 
 WORKDIR /app
 RUN apt-get update && apt-get install -y git
 
 # --- 环境变量处理 ---
 ARG NEXT_PUBLIC_API_URL # 声明一个构建参数 (示例)
-ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL # 将 ARG 设为环境变量
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL 
 
-COPY ./package.json ./bun.lockb ./ # 复制 lock 文件也很重要
-RUN bun install --frozen-lockfile # 使用 lock 文件确保依赖一致性
+COPY ./package.json ./bun.lockb ./ 
+RUN bun install --frozen-lockfile 
 
 COPY . .
 
