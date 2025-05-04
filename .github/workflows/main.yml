@@ -2,7 +2,7 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [ main ]  # 或 master，取决于你的默认分支
+    branches: [ master ]  # 或 master，取决于你的默认分支
   workflow_dispatch:
 
 jobs:
