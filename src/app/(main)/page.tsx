@@ -11,6 +11,8 @@ import BarChartComponent from "@/components/barchart";
 import PieChartComponent from "@/components/piechart";
 import Calendar from "@/components/custom-calendar";
 import { ChallengeTable } from "@/components/table";
+import { useHydrationAttempts } from "@/hooks/use-hydrationattempts";
+import { useLevelTiredness } from "@/hooks/use-leveltiredness";
 
 // Valores que apareceran en la tabla de agua consumida:
 const barChartData = [
@@ -38,34 +40,41 @@ const timeData = [
   { name: "Tarea D", value: 20, color: "#ff8042" },
 ];
 
-const metrics = [
-  {
-    title: "H2O Consumption Tracker",
-    icon: <GlassWater />,
-    value: "9 Times",
-    description: "+20.1% from last month",
-  },
-  {
-    title: "Fatigue Score",
-    icon: <BatteryLow />,
-    value: "Low",
-    description: "+20.1% from last month",
-  },
-  {
-    title: "Posture Health Index",
-    icon: <PersonStanding />,
-    value: "50%",
-    description: "+20.1% from last month",
-  },
-  {
-    title: "Rest Pause Count",
-    icon: <MonitorPause />,
-    value: "10/10",
-    description: "Today Complete",
-  },
-];
+
 
 export default function Dashboard() {
+
+  const hydrationAttempts = useHydrationAttempts();
+  const fatiguescore = useLevelTiredness();
+
+  const metrics = [
+    {
+      title: "H2O Consumption Tracker",
+      icon: <GlassWater />,
+      value: hydrationAttempts, //valor dinámico del hook
+      description: "+20.1% from last month",
+    },
+    {
+      title: "Fatigue Score",
+      icon: <BatteryLow />,
+      value: "Low",
+      description: "+20.1% from last month",
+    },
+    {
+      title: "Posture Health Index",
+      icon: <PersonStanding />,
+      value: "50%",
+      description: "+20.1% from last month",
+    },
+    {
+      title: "Rest Pause Count",
+      icon: <MonitorPause />,
+      value: "10/10",
+      description: "Today Complete",
+    },
+  ];
+
+
   return (
     <div className="flex flex-col h-full w-full bg-gray-200">
       <div className="flex flex-col flex-1 p-4">
