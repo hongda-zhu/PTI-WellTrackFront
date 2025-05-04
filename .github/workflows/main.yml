@@ -2,7 +2,7 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main ]  # 或 master，取决于你的默认分支
   workflow_dispatch:
 
 jobs:
@@ -10,8 +10,8 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      packages: write  # 需要此权限发布到 GHCR
-    
+      packages: write  # 这个权限很重要，允许推送到 GHCR
+      
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -23,7 +23,7 @@ jobs:
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
-          username: ${{ github.actor }}
+          username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
           
       - name: Set SHA tag
@@ -38,8 +38,11 @@ jobs:
           tags: |
             ghcr.io/${{ github.repository_owner }}/welltrack-frontend:${{ steps.vars.outputs.sha_short }}
             ghcr.io/${{ github.repository_owner }}/welltrack-frontend:latest
+          # 确保镜像可公开访问
+          labels: |
+            org.opencontainers.image.source=https://github.com/${{ github.repository }}
 
-      # 更新 GitOps 仓库部分保持不变
+      # GitOps 更新部分
       - name: Set up SSH for GitOps repo
         uses: webfactory/ssh-agent@v0.9.0
         with:
@@ -48,7 +51,7 @@ jobs:
       - name: Checkout GitOps repo
         uses: actions/checkout@v4
         with:
-          repository: 你的用户名/welltrack-gitops
+          repository: ${{ github.repository_owner }}/welltrack-gitops
           path: gitops
           ssh-key: ${{ secrets.GIT_DEPLOY_KEY }}
 
@@ -60,7 +63,7 @@ jobs:
           sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
           sudo chmod +x /usr/local/bin/yq
           
-          # 更新 values.yaml 中的镜像标签和仓库
+          # 更新镜像标签和仓库
           yq -i '.image.tag = "${{ steps.vars.outputs.sha_short }}"' values.yaml
           yq -i '.image.repository = "ghcr.io/${{ github.repository_owner }}/welltrack-frontend"' values.yaml
           
