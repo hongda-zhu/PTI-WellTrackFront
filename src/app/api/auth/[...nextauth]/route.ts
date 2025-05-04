@@ -22,7 +22,7 @@ export const authOptions: NextAuthOptions = {
         })(),
     }),
 
-    // Email/Password Provider
+    // Email/Password Login Provider 
     CredentialsProvider({
       name: "Credentials",
       credentials: {
@@ -46,6 +46,32 @@ export const authOptions: NextAuthOptions = {
         return null; // Return null if authentication fails
       },
     }),
+
+    // Email/Password Register Provider
+    CredentialsProvider({
+      name: "Register",
+      credentials: {
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" },
+      },
+      async authorize(credentials) {
+        try {
+          const response = await axios.post("http://backend:3001/register", {
+            email: credentials?.email,
+            password: credentials?.password,
+          });
+
+          if (response.status === 201 && response.data) {
+            return { id: response.data.id, email: response.data.email }; // Ensure 'id' is included
+          }
+        } catch (error) {
+          console.error("Registration failed:", error);
+        }
+
+        return null; // Return null if registration fails
+      },
+    }),
+    
   ],
   session: {
     strategy: "jwt",
