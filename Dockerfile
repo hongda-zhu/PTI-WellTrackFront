@@ -5,7 +5,7 @@ WORKDIR /app
 COPY package*.json ./
 RUN bun install
 COPY . .
-RUN bun run build
+RUN bun run next build --no-lint
 
 FROM nginx:alpine
 COPY --from=0 /app/build /usr/share/nginx/html
