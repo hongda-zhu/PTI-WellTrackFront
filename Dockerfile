@@ -1,24 +1,22 @@
-FROM oven/bun:1.1.8 as build
+# Frontend Dockerfile
+FROM oven/bun:latest
 
+
+# Set working directory
 WORKDIR /app
-RUN apt-get update && apt-get install -y git
 
-# --- 环境变量处理 ---
-ARG NEXT_PUBLIC_API_URL # 声明一个构建参数 (示例)
-ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL 
+# Copy bun.lockb and package.json (if available)
+COPY ./package.json ./
 
-COPY ./package.json ./bun.lockb ./ 
-RUN bun install --frozen-lockfile 
+# Install dependencies with Bun
+RUN bun install
 
+# Copy the rest of the frontend files
 COPY . .
 
-# --- 不再覆盖 next.config.js ---
-# 确保仓库里的 next.config.js 正确配置了 output: "export" 等
 
-# 构建时使用环境变量
-RUN bun run build
+# Expose the frontend port
+EXPOSE 3000
 
-# --- 生产阶段 ---
-FROM nginx:alpine
-COPY --from=build /app/out /usr/share/nginx/html
-# ... (rest of your Nginx setup)
+# Serve the app
+CMD ["bun", "run", "dev"]
